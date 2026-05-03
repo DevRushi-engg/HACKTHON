@@ -192,7 +192,7 @@ export class App {
       } else if (this.budgetRemaining() < 0) {
         this.aiCritique.set("You are over budget! You must adjust your squad to meet the franchise limits.");
       }
-    }, { allowSignalWrites: true });
+    });
   }
 
   async analyzeSquadWithGemini() {
@@ -204,12 +204,15 @@ export class App {
       const squadDetails = this.squad().map(p => `${p.name} (${p.role}, ₹${p.cost}CR)`).join(', ');
       const prompt = `You are an expert T20 cricket coach. Analyze this IPL squad and provide a quick 3-sentence critique focusing on team balance, strengths, and weaknesses: ${squadDetails}`;
 
-      const apiKey = 'AIzaSyD7MiA0IaoO7cSOOs5M0DLSeRkFEg91bnI';
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const apiKey = 'AIzaSyDWcutMVHC7dozD1LuBE5YEidhXcKLFDX4';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent`;
       
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-goog-api-key': apiKey
+        },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }]
         })
@@ -252,12 +255,15 @@ export class App {
       Here is the JSON payload:
       ${payloadJson}`;
 
-      const apiKey = 'AIzaSyD7MiA0IaoO7cSOOs5M0DLSeRkFEg91bnI';
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const apiKey = 'AIzaSyDWcutMVHC7dozD1LuBE5YEidhXcKLFDX4';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent`;
       
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-goog-api-key': apiKey
+        },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }]
         })
@@ -265,7 +271,19 @@ export class App {
 
       const data = await response.json();
       if (data.candidates && data.candidates[0].content.parts[0].text) {
-        this.deepInsights.set(data.candidates[0].content.parts[0].text.trim());
+        let text = data.candidates[0].content.parts[0].text.trim();
+        
+        // Basic Markdown to HTML conversion
+        text = text.replace(/### (.*?)\n/g, '<h4>$1</h4>');
+        text = text.replace(/## (.*?)\n/g, '<h3 style="color: #38bdf8; margin-top: 1.5rem; margin-bottom: 0.5rem;">$1</h3>');
+        text = text.replace(/# (.*?)\n/g, '<h2 style="color: #22d3ee; margin-top: 1.5rem;">$1</h2>');
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #f8fafc;">$1</strong>');
+        text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        text = text.replace(/\n\n/g, '<br><br>');
+        text = text.replace(/\n- (.*?)/g, '<br>• $1');
+        text = text.replace(/\n/g, '<br>');
+
+        this.deepInsights.set(text);
       } else {
         this.deepInsights.set("Failed to generate deep insights.");
       }
