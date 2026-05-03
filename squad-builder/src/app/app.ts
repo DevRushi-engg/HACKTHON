@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { LucideAngularModule, Search, X, Check, Activity, Shield, Users, Crosshair, Star, AlertCircle, User, Download, Zap, Brain, TrendingUp, Target, Sparkles, Play, HelpCircle } from 'lucide-angular';
+import { PLAYERS_DATA } from './players.data';
 
 export interface Player {
   id: number;
@@ -11,6 +12,20 @@ export interface Player {
   role: 'BAT' | 'BOWL' | 'AR' | 'WK';
   cost: number;
   image: string;
+  isOverseas?: boolean;
+  stats?: {
+    matches?: number;
+    runs?: number;
+    strikeRate?: number;
+    wickets?: number;
+    economy?: number;
+  };
+  attributes?: {
+    batting?: number;
+    bowling?: number;
+    fielding?: number;
+    experience?: number;
+  };
 }
 
 const PLAYERS: Player[] = [
@@ -79,7 +94,9 @@ export class App {
     { name: 'Bangalore Bolts', purse: 61.0, squadSize: 2, isBidding: false }
   ];
 
-  allPlayers = signal<Player[]>(PLAYERS);
+  // Using data loaded from ipl_auction_df.csv
+  playerPool = signal<Player[]>(PLAYERS_DATA);
+  
   searchQuery = signal<string>('');
   activeFilter = signal<'ALL' | 'BAT' | 'BOWL' | 'AR' | 'WK'>('ALL');
   
@@ -103,7 +120,7 @@ export class App {
   filteredPlayers = computed(() => {
     const q = this.searchQuery().toLowerCase();
     const f = this.activeFilter();
-    return this.allPlayers().filter(p => {
+    return this.playerPool().filter(p => {
       const matchSearch = p.name.toLowerCase().includes(q);
       const matchRole = f === 'ALL' || p.role === f;
       const notInSquad = !this.squad().find(sp => sp.id === p.id);
@@ -157,20 +174,59 @@ export class App {
     };
   });
   
-  aiCritique = computed(() => {
-    if (this.squad().length < 11) return "Assemble your full 11-man squad to receive the AI Coach Critique.";
-    const sq = this.squad();
-    const wks = sq.filter(p => p.role === 'WK').length;
-    const bowls = sq.filter(p => p.role === 'BOWL').length;
-    const bats = sq.filter(p => p.role === 'BAT').length;
-    
-    if (wks === 0) return "Warning: You are playing without a designated wicket-keeper! Swap a pure batter out for a keeper.";
-    if (bowls < 3) return "Your bowling attack looks dangerously thin. Consider dropping an extra batter for a frontline specialist bowler.";
-    if (bats < 3) return "Top order looks fragile. You need more specialized batters to anchor the innings.";
-    if (this.budgetRemaining() < 0) return "You are over budget! You must adjust your squad to meet the franchise limits.";
-    
-    return "Your squad has a formidable balance. The batting depth looks solid, and the all-rounders provide crucial flexibility. A strong core to challenge for the title!";
-  });
+  aiCritique = signal<string>("Assemble your full 11-man squad to receive the AI Coach Critique.");
+  isAnalyzing = signal<boolean>(false);
+
+  constructor() {
+    effect(() => {
+      const sq = this.squad();
+      if (sq.length === 11 && this.budgetRemaining() >= 0) {
+        // Run analysis asynchronously so we don't block the effect
+        setTimeout(() => this.analyzeSquadWithGemini(), 0);
+      } else if (sq.length < 11) {
+        this.aiCritique.set("Assemble your full 11-man squad to receive the AI Coach Critique.");
+      } else if (this.budgetRemaining() < 0) {
+        this.aiCritique.set("You are over budget! You must adjust your squad to meet the franchise limits.");
+      }
+    }, { allowSignalWrites: true });
+  }
+
+  async analyzeSquadWithGemini() {
+    if (this.isAnalyzing()) return;
+    this.isAnalyzing.set(true);
+    this.aiCritique.set("Gemini AI is analyzing your squad composition...");
+
+    try {
+      const squadDetails = this.squad().map(p => `${p.name} (${p.role}, ₹${p.cost}CR)`).join(', ');
+      const prompt = `You are an expert T20 cricket coach. Analyze this IPL squad and provide a quick 3-sentence critique focusing on team balance, strengths, and weaknesses: ${squadDetails}`;
+
+      const apiKey = 'AIzaSyD7MiA0IaoO7cSOOs5M0DLSeRkFEg91bnI';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
+
+      const data = await response.json();
+      if (data.candidates && data.candidates[0].content.parts[0].text) {
+        // Clean up markdown bolding from response if any
+        let text = data.candidates[0].content.parts[0].text.trim();
+        text = text.replace(/\*\*/g, '');
+        this.aiCritique.set(text);
+      } else {
+        this.aiCritique.set("Gemini AI analysis failed to return a critique.");
+      }
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      this.aiCritique.set("Error connecting to Gemini AI. Check console for details.");
+    } finally {
+      this.isAnalyzing.set(false);
+    }
+  }
 
   setFilter(filter: string) {
     this.activeFilter.set(filter as any);

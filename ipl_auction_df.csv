@@ -1,0 +1,41 @@
+name,role,base_price_crore,batting_rating,bowling_rating,fielding_rating,experience_years,overseas,batting_style,detailed_bowling_style,total_matches,total_runs,strike_rate,average,total_wickets,economy
+Virat Kohli,Bowler,2.0,23,84,86,15,True,Right-hand,None,142,429,82.28,14.64,182,8.93
+Rohit Sharma,Bowler,2.0,29,91,92,15,True,Right-hand,None,219,838,83.42,12.79,223,6.87
+MS Dhoni,Bowler,2.0,31,96,63,12,True,Right-hand,None,132,656,81.2,14.37,122,8.49
+KL Rahul,All-Rounder,2.0,84,98,55,6,True,Right-hand,None,54,1332,145.8,33.84,48,9.41
+Hardik Pandya,Bowler,2.0,27,55,79,5,False,Right-hand,Right-arm Fast,146,971,112.88,14.26,160,9.27
+Jasprit Bumrah,Wicket-Keeper,2.0,90,74,82,4,False,Right-hand,Right-arm Fast,111,2367,132.84,24.81,0,0.0
+Ravindra Jadeja,Bowler,2.0,30,66,74,5,False,Left-hand,Left-arm Spin,60,237,93.6,9.9,72,7.57
+Shubman Gill,All-Rounder,1.5,55,57,88,15,True,Right-hand,None,142,3438,146.71,26.54,170,6.72
+Rishabh Pant,Bowler,2.0,22,56,57,1,True,Left-hand,None,161,1275,107.03,9.39,129,8.95
+Suryakumar Yadav,Wicket-Keeper,2.0,72,76,97,3,False,Right-hand,None,114,3488,154.16,37.88,0,0.0
+Andre Russell,All-Rounder,2.0,62,91,51,12,True,Right-hand,Right-arm Fast,127,2681,139.34,26.09,156,8.37
+Sunil Narine,Bowler,2.0,23,59,100,9,False,Left-hand,Right-arm Spin,156,621,82.22,10.18,150,8.69
+Jos Buttler,Bowler,2.0,25,67,60,2,True,Right-hand,None,139,809,111.05,11.31,119,8.64
+David Warner,Batter,2.0,81,44,89,8,True,Left-hand,None,143,4491,147.45,37.88,0,0.0
+Glenn Maxwell,Bowler,2.0,47,91,74,2,True,Right-hand,Right-arm Spin,191,947,98.3,10.99,155,6.82
+Faf du Plessis,Wicket-Keeper,2.0,79,100,54,10,True,Right-hand,None,170,3480,150.46,29.66,0,0.0
+Trent Boult,Bowler,2.0,24,80,63,4,True,Right-hand,Left-arm Fast,189,954,111.76,9.75,189,8.77
+Kagiso Rabada,Bowler,2.0,49,100,62,12,True,Left-hand,Right-arm Fast,92,310,82.69,10.03,81,9.29
+Anrich Nortje,Batter,1.5,81,57,97,10,True,Right-hand,Right-arm Fast,41,1316,150.34,39.69,10,8.97
+Yuzvendra Chahal,All-Rounder,1.5,58,98,78,6,True,Right-hand,Right-arm Spin,127,4240,146.57,38.53,158,7.45
+Axar Patel,All-Rounder,1.5,65,50,50,4,False,Left-hand,Left-arm Spin,197,4265,134.12,31.69,238,9.08
+Kuldeep Yadav,Wicket-Keeper,1.5,84,53,88,8,False,Left-hand,Left-arm Spin,77,1548,145.43,31.51,0,0.0
+Sanju Samson,All-Rounder,1.5,55,84,60,2,True,Right-hand,None,169,3943,129.79,30.08,214,7.47
+Ishan Kishan,Wicket-Keeper,1.5,77,97,62,4,True,Left-hand,None,60,1666,153.12,30.55,0,0.0
+Mohammed Siraj,All-Rounder,1.5,91,83,64,10,False,Right-hand,Right-arm Fast,200,6915,163.5,28.53,209,7.4
+Bhuvneshwar Kumar,Bowler,2.0,29,71,81,11,False,Right-hand,Right-arm Fast,97,359,81.29,12.27,101,6.65
+Deepak Chahar,Batter,1.5,73,38,73,5,True,Right-hand,Right-arm Fast,61,1474,161.33,28.31,7,9.72
+Ruturaj Gaikwad,All-Rounder,1.5,79,80,92,13,True,Right-hand,None,128,4452,134.68,36.1,151,7.21
+Devdutt Padikkal,Batter,1.0,99,31,87,2,False,Left-hand,None,88,2721,139.71,35.38,0,0.0
+Rahul Tripathi,Bowler,1.0,25,87,84,6,True,Right-hand,None,98,568,98.75,8.63,119,7.46
+Nitish Rana,Wicket-Keeper,1.0,92,99,64,4,False,Left-hand,Right-arm Spin,209,4764,126.63,34.64,0,0.0
+Washington Sundar,Wicket-Keeper,1.0,92,83,51,5,False,Left-hand,Right-arm Spin,54,1628,125.66,33.22,0,0.0
+Dinesh Karthik,All-Rounder,1.5,71,85,78,8,True,Right-hand,None,214,5007,150.81,27.14,245,7.66
+Shivam Dube,All-Rounder,1.0,100,72,65,11,True,Left-hand,Right-arm Fast,90,3064,130.5,30.14,77,9.27
+Marcus Stoinis,All-Rounder,1.5,50,72,91,2,False,Right-hand,Right-arm Fast,147,4874,135.32,35.88,177,8.17
+Mitchell Marsh,All-Rounder,1.5,82,85,70,1,False,Right-hand,Right-arm Fast,94,2626,134.67,25.68,117,9.2
+Tim David,Wicket-Keeper,1.0,78,81,55,11,False,Right-hand,None,103,3038,138.56,30.29,0,0.0
+Liam Livingstone,All-Rounder,1.5,89,87,87,14,False,Right-hand,Right-arm Spin,170,5251,160.88,39.97,202,8.43
+Aiden Markram,Wicket-Keeper,1.5,94,74,96,15,False,Right-hand,Right-arm Spin,90,1913,131.47,40.17,0,0.0
+Quinton de Kock,All-Rounder,2.0,70,97,51,1,False,Left-hand,None,174,5062,125.37,25.83,196,6.52
