@@ -6,6 +6,8 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { LucideAngularModule, Search, X, Check, Activity, Shield, Users, Crosshair, Star, AlertCircle, User, Download, Zap, Brain, TrendingUp, Target, Sparkles, Play, HelpCircle } from 'lucide-angular';
 import { PLAYERS_DATA } from './players.data';
 import { GeminiService } from './gemini.service';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export interface Player {
   id: number;
@@ -28,8 +30,8 @@ export interface Player {
 export class App {
   readonly LucideIcons = { Search, X, Check, Activity, Shield, Users, Crosshair, Star, AlertCircle, User, Download, Zap, Brain, TrendingUp, Target, Sparkles, Play, HelpCircle };
 
-  // ── Auth ──────────────────────────────────────
-  isLoggedIn = signal<boolean>(false);
+  // ── Auth & State ──────────────────────────────────────
+  appState = signal<'LANDING' | 'AUTH' | 'DASHBOARD'>('LANDING');
   franchiseName = signal<string>('');
   passcode = signal<string>('');
 
@@ -274,19 +276,50 @@ export class App {
   setFilter(filter: string) { this.activeFilter.set(filter as any); }
 
   exportData() {
-    const data = { franchise: this.franchiseName(), budgetUsed: this.budgetSpent(), squad: this.squad() };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${this.franchiseName() || 'franchise'}_squad.json`;
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const doc = new jsPDF();
+    const fName = this.franchiseName() || 'Franchise';
+    
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(34, 211, 238); // Cyan
+    doc.text(`${fName} - Official Squad Report`, 14, 20);
+    
+    // Subheader / Stats
+    doc.setFontSize(12);
+    doc.setTextColor(100, 116, 139);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
+    
+    doc.setFontSize(14);
+    doc.setTextColor(20, 20, 20);
+    doc.text(`Total Squad Size: ${this.squad().length} / 11`, 14, 40);
+    doc.text(`Budget Spent: Rs. ${this.budgetSpent().toFixed(1)} CR`, 14, 48);
+    doc.text(`Purse Remaining: Rs. ${this.budgetRemaining().toFixed(1)} CR`, 14, 56);
+
+    // Table Data
+    const tableBody = this.squad().map((p, index) => [
+      (index + 1).toString(),
+      p.name,
+      p.role,
+      `Rs. ${p.cost} CR`
+    ]);
+
+    autoTable(doc, {
+      startY: 65,
+      head: [['#', 'Player Name', 'Role', 'Cost']],
+      body: tableBody,
+      theme: 'grid',
+      headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255] },
+      alternateRowStyles: { fillColor: [241, 245, 249] }
+    });
+
+    // Save PDF
+    doc.save(`${fName.replace(/\s+/g, '_')}_Squad_Report.pdf`);
   }
 
   handleLogin() {
-    if (this.franchiseName().trim().length > 0) this.isLoggedIn.set(true);
+    if (this.franchiseName().trim().length > 0) {
+      this.appState.set('DASHBOARD');
+    }
   }
 
   addPlayer(player: Player) {

@@ -1,4 +1,35 @@
-@if (!isLoggedIn()) {
+@if (appState() === 'LANDING') {
+<!-- LANDING PAGE -->
+<div class="landing-container">
+  <div class="landing-content">
+    <div class="landing-logo-box">
+      <lucide-icon [img]="LucideIcons.Shield" size="64" class="landing-logo text-cyan"></lucide-icon>
+    </div>
+    <h1 class="landing-title">IPL Squad Builder <span class="text-cyan">Pro</span></h1>
+    <p class="landing-subtitle">The ultimate AI-powered War Room and predictive auction simulation engine.</p>
+    
+    <div class="landing-features">
+      <div class="landing-feature">
+        <lucide-icon [img]="LucideIcons.Brain" size="20" class="text-amber"></lucide-icon>
+        <span>Gemini AI Strategy</span>
+      </div>
+      <div class="landing-feature">
+        <lucide-icon [img]="LucideIcons.TrendingUp" size="20" class="text-emerald"></lucide-icon>
+        <span>Live Rival Tracking</span>
+      </div>
+      <div class="landing-feature">
+        <lucide-icon [img]="LucideIcons.Users" size="20" class="text-rose"></lucide-icon>
+        <span>100CR Budget Engine</span>
+      </div>
+    </div>
+
+    <button class="landing-enter-btn" (click)="appState.set('AUTH')">
+      Initialize Franchise
+      <lucide-icon [img]="LucideIcons.Play" size="18"></lucide-icon>
+    </button>
+  </div>
+</div>
+} @else if (appState() === 'AUTH') {
 <div class="login-container">
   <div class="login-card">
     <div class="login-header">
@@ -262,7 +293,7 @@
           <lucide-icon [img]="LucideIcons.Users" size="14"></lucide-icon>
         </div>
         <div class="rivals-list">
-          @for (rival of rivalFranchises; track rival.name) {
+          @for (rival of rivalFranchises(); track rival.name) {
             <div class="rival-card" [class.active-bidding]="rival.isBidding">
               <div class="rival-header">
                 <span class="rival-name">{{rival.name}}</span>
@@ -412,10 +443,10 @@
                 </div>
                 @if (player.stats?.matches) {
                   <div class="squad-player-stats">
-                    @if (player.stats?.runs) { <span>{{player.stats.runs}} Runs</span> }
-                    @if (player.stats?.wickets) { <span>{{player.stats.wickets}} Wkts</span> }
-                    @if (player.stats?.economy) { <span>Eco: {{player.stats.economy}}</span> }
-                    @if (player.stats?.strikeRate) { <span>SR: {{player.stats.strikeRate}}</span> }
+                    @if (player.stats?.runs) { <span>{{player.stats?.runs}} Runs</span> }
+                    @if (player.stats?.wickets) { <span>{{player.stats?.wickets}} Wkts</span> }
+                    @if (player.stats?.economy) { <span>Eco: {{player.stats?.economy}}</span> }
+                    @if (player.stats?.strikeRate) { <span>SR: {{player.stats?.strikeRate}}</span> }
                   </div>
                 }
               </div>

@@ -1464,6 +1464,95 @@
   gap: 1rem;
 }
 /* ============================================================
+   LANDING PAGE (Homepage)
+   ============================================================ */
+.landing-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top right, #0f172a, #020617);
+  padding: 2rem;
+  color: #f8fafc;
+}
+
+.landing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 800px;
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-logo-box {
+  background: rgba(34, 211, 238, 0.1);
+  padding: 2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  margin-bottom: 2rem;
+  box-shadow: 0 0 40px rgba(34, 211, 238, 0.2);
+}
+
+.landing-title {
+  font-size: 4rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.landing-subtitle {
+  font-size: 1.25rem;
+  color: #94a3b8;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+.landing-features {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.landing-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #1e293b;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #e2e8f0;
+}
+
+.landing-enter-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 2.5rem;
+  background: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 99px;
+  font-size: 1.125rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
+}
+
+.landing-enter-btn:hover {
+  background: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(14, 165, 233, 0.6);
+}
+
+/* ============================================================
    FULL PAGE VIEWS (My Squad, Rival Tracker, Scouting, Simulation)
    ============================================================ */
 
