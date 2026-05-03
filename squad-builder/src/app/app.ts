@@ -228,6 +228,63 @@ export class App {
     }
   }
 
+  detailedInsights = signal<string>('');
+  isGeneratingInsights = signal<boolean>(false);
+
+  async generateDetailedInsights() {
+    if (this.squad().length === 0) {
+      this.detailedInsights.set("You need to select at least one player to generate insights.");
+      return;
+    }
+    
+    this.isGeneratingInsights.set(true);
+    this.detailedInsights.set("Initiating AI Agent... Analyzing squad synergy and player roles...");
+
+    try {
+      const squadJSON = JSON.stringify(this.squad().map(p => ({
+        name: p.name,
+        role: p.role,
+        cost: p.cost,
+        stats: p.stats
+      })), null, 2);
+
+      const prompt = `You are a world-class cricket data analyst. Analyze the following squad selection provided in JSON format. 
+      Write a brief 3-paragraph report. 
+      Paragraph 1: Overall squad synergy and primary strength.
+      Paragraph 2: Detailed tactical analysis (batting depth and bowling options).
+      Paragraph 3: Key vulnerabilities or recommended strategies for the tournament.
+      Do not use markdown bolding (**). Just use plain text with line breaks between paragraphs.
+      
+      Squad JSON:
+      ${squadJSON}`;
+
+      const apiKey = 'AIzaSyD7MiA0IaoO7cSOOs5M0DLSeRkFEg91bnI';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
+
+      const data = await response.json();
+      if (data.candidates && data.candidates[0].content.parts[0].text) {
+        let text = data.candidates[0].content.parts[0].text;
+        text = text.replace(/\*\*/g, '');
+        this.detailedInsights.set(text);
+      } else {
+        this.detailedInsights.set("AI Agent failed to generate a report.");
+      }
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      this.detailedInsights.set("Error connecting to Gemini AI Agent.");
+    } finally {
+      this.isGeneratingInsights.set(false);
+    }
+  }
+
   setFilter(filter: string) {
     this.activeFilter.set(filter as any);
   }

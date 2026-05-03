@@ -97,246 +97,305 @@
     </div>
   </aside>
 
-  <!-- MAIN DASHBOARD -->
-  <div class="dashboard">
-  
-  <!-- LEFT COLUMN: Player Pool (30%) -->
-  <div class="column-left">
-    <!-- Header -->
-    <div class="pool-header">
-      <div class="header-title">
-        <lucide-icon [img]="LucideIcons.Search" size="20"></lucide-icon>
-        <h1>Scouting Database</h1>
-      </div>
-      
-      <!-- Search Bar -->
-      <div class="search-bar">
-        <div class="search-icon">
-          <lucide-icon [img]="LucideIcons.Search" size="16"></lucide-icon>
-        </div>
-        <input 
-          type="text" 
-          [ngModel]="searchQuery()"
-          (ngModelChange)="searchQuery.set($event)"
-          class="search-input" 
-          placeholder="Search players..."
-        >
-      </div>
-
-      <!-- Filter Pills -->
-      <div class="filter-pills">
-        @for (filter of ['ALL', 'BAT', 'BOWL', 'AR', 'WK']; track filter) {
-          <button 
-            (click)="setFilter(filter)"
-            class="filter-btn"
-            [class.active]="activeFilter() === filter">
-            {{filter}}
-          </button>
-        }
-      </div>
-    </div>
-
-    <!-- Player List -->
-    <div class="player-list">
-      @for (player of filteredPlayers(); track player.id) {
-        <div class="player-card">
-          <div class="player-info">
-            <div class="player-avatar">
-              <div class="avatar-placeholder">
-                <lucide-icon [img]="LucideIcons.User" size="24"></lucide-icon>
-              </div>
-              <div class="status-dot"></div>
-            </div>
-            <div>
-              <h3 class="player-name">{{player.name}}</h3>
-              <div class="player-meta">
-                <span class="role-tag" [ngClass]="getRoleColor(player.role)">
-                  {{player.role}}
-                </span>
-                <span class="cost">₹ {{player.cost}} CR</span>
-              </div>
-            </div>
-          </div>
-          <button 
-            (click)="addPlayer(player)"
-            [disabled]="isSquadFull()"
-            class="add-btn"
-          >
-            <span>+</span>
-          </button>
-        </div>
-      }
-      @if (filteredPlayers().length === 0) {
-        <div class="empty-state">
-          No players found matching your criteria.
-        </div>
-      }
-    </div>
-  </div>
-
-  <!-- CENTER COLUMN: Pitch & Budget Tracker (40%) -->
-  <div class="column-center">
-    <!-- Grid Background Pattern -->
-    <div class="grid-bg"></div>
+  <!-- MAIN CONTENT AREA -->
+  <div class="main-content-wrapper" style="flex: 1; height: 100%; overflow: hidden; display: flex;">
     
-    <!-- Top Widget: Budget -->
-    <div class="budget-widget">
-      <div class="budget-card">
-        <div class="budget-header">
-          <div>
-            <h2 class="budget-label">{{franchiseName()}} Purse</h2>
-            <div class="budget-value" [class.text-rose]="budgetRemaining() < 0" [class.text-emerald]="budgetRemaining() >= 0">
-              ₹ {{budgetRemaining() | number:'1.1-1'}} <span class="budget-max">/ {{maxBudget}} CR</span>
+    @if (activeTab() === 'War Room') {
+      <div class="dashboard" style="width: 100%;">
+        
+        <!-- LEFT COLUMN: Player Pool (30%) -->
+        <div class="column-left">
+          <!-- Header -->
+          <div class="pool-header">
+            <div class="header-title">
+              <lucide-icon [img]="LucideIcons.Users" size="20"></lucide-icon>
+              <h1>Scouting Database</h1>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="search-bar">
+              <div class="search-icon">
+                <lucide-icon [img]="LucideIcons.Search" size="16"></lucide-icon>
+              </div>
+              <input 
+                type="text" 
+                [ngModel]="searchQuery()"
+                (ngModelChange)="searchQuery.set($event)"
+                class="search-input" 
+                placeholder="Search players..."
+              >
+            </div>
+
+            <!-- Filter Pills -->
+            <div class="filter-pills">
+              @for (filter of ['ALL', 'BAT', 'BOWL', 'AR', 'WK']; track filter) {
+                <button 
+                  (click)="setFilter(filter)"
+                  class="filter-btn"
+                  [class.active]="activeFilter() === filter">
+                  {{filter}}
+                </button>
+              }
             </div>
           </div>
-          <div style="text-align: right">
-            <h2 class="budget-label">Squad Status</h2>
-            <div class="squad-status-val">
-              {{squad().length}} <span class="budget-max">/ 11</span>
+
+          <!-- Player List -->
+          <div class="player-list">
+            @for (player of filteredPlayers(); track player.id) {
+              <div class="player-card">
+                <div class="player-info">
+                  <div class="player-avatar">
+                    <div class="avatar-placeholder">
+                      <lucide-icon [img]="LucideIcons.User" size="24"></lucide-icon>
+                    </div>
+                    <div class="status-dot"></div>
+                  </div>
+                  <div>
+                    <h3 class="player-name">{{player.name}}</h3>
+                    <div class="player-meta">
+                      <span class="role-tag" [ngClass]="getRoleColor(player.role)">
+                        {{player.role}}
+                      </span>
+                      <span class="cost">₹ {{player.cost}} CR</span>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  (click)="addPlayer(player)"
+                  [disabled]="isSquadFull()"
+                  class="add-btn"
+                >
+                  <span>+</span>
+                </button>
+              </div>
+            }
+            @if (filteredPlayers().length === 0) {
+              <div class="empty-state">
+                No players found matching your criteria.
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- CENTER COLUMN: Pitch & Budget Tracker (40%) -->
+        <div class="column-center">
+          <!-- Grid Background Pattern -->
+          <div class="grid-bg"></div>
+
+          <!-- Budget Tracker Top -->
+          <div class="budget-panel">
+            <div class="budget-header">
+              <div class="budget-title">
+                <lucide-icon [img]="LucideIcons.Shield" size="18"></lucide-icon>
+                <h2>Franchise Budget</h2>
+              </div>
+              <div class="budget-amount">
+                ₹ {{budgetRemaining() | number:'1.1-1'}} CR
+              </div>
+            </div>
+            
+            <div class="budget-bar-container">
+              <div 
+                class="budget-bar-fill" 
+                [ngClass]="getBudgetBarColor()"
+                [style.width.%]="budgetPercentage()"
+              ></div>
+            </div>
+            
+            <div class="budget-stats">
+              <span>Spent: ₹ {{budgetSpent() | number:'1.1-1'}} CR</span>
+              <span>Squad: {{squad().length}}/11</span>
+            </div>
+          </div>
+
+          <!-- Cricket Pitch Visualization -->
+          <div class="pitch-container">
+            <div class="pitch-wrapper">
+              <div class="cricket-pitch">
+                <div class="pitch-inner">
+                  <div class="crease top-crease"></div>
+                  <div class="crease bottom-crease"></div>
+                  <div class="stumps top-stumps"></div>
+                  <div class="stumps bottom-stumps"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected Players Horizontal Scroll -->
+          <div class="selected-players-tray">
+            <div class="tray-title">
+              <lucide-icon [img]="LucideIcons.Check" size="14"></lucide-icon>
+              SELECTED XI
+            </div>
+            <div class="slots-container">
+              <!-- Create exactly 11 slots -->
+              @for (slot of [0,1,2,3,4,5,6,7,8,9,10]; track slot; let i = $index) {
+                <div class="player-slot" [class.filled]="squad()[i]">
+                  @if (squad()[i]) {
+                    <!-- Filled Slot -->
+                    <div class="slot-avatar">
+                      <div class="avatar-placeholder sm">
+                        <lucide-icon [img]="LucideIcons.User" size="16"></lucide-icon>
+                      </div>
+                    </div>
+                    <div class="slot-details">
+                      <div class="slot-name">{{squad()[i].name}}</div>
+                      <div class="slot-role">{{squad()[i].role}}</div>
+                    </div>
+                    <button 
+                      class="remove-btn"
+                      (click)="removePlayer(squad()[i])"
+                    >
+                      <lucide-icon [img]="LucideIcons.X" size="12" strokeWidth="3"></lucide-icon>
+                    </button>
+                  } @else {
+                    <!-- Empty Slot -->
+                    <div class="slot-empty">
+                      <div class="slot-empty-icon">
+                        <lucide-icon [img]="LucideIcons.Users" size="12"></lucide-icon>
+                      </div>
+                      <div class="slot-empty-text">Slot {{i+1}}</div>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
         </div>
-        
-        <!-- Budget Bar -->
-        <div class="budget-bar-bg">
-          <div 
-            class="budget-bar-fill"
-            [ngClass]="getBudgetBarColor()"
-            [class.animate-pulse]="budgetRemaining() < 10 && budgetRemaining() >= 0"
-            [style.width.%]="budgetPercentage()"
-          ></div>
-        </div>
-        @if (budgetRemaining() < 0) {
-          <div class="budget-warning animate-pulse">
-            <lucide-icon [img]="LucideIcons.AlertCircle" size="14"></lucide-icon> Budget Exceeded!
-          </div>
-        }
-      </div>
-    </div>
 
-    <!-- The Pitch -->
-    <div class="pitch-container">
-      <!-- Pitch UI -->
-      <div class="pitch-outline">
-        <div class="crease-top"></div>
-        <div class="crease-bottom"></div>
-        <div class="pitch-logo">
-          <lucide-icon [img]="LucideIcons.Star" size="24"></lucide-icon>
-        </div>
-      </div>
-      
-      <!-- Player Slots Grid (11 players) -->
-      <div class="slots-grid">
-        <!-- Top Order (3) -->
-        <div class="slot-row row-top">
-          @for (i of [0, 1, 2]; track i) {
-            <ng-container *ngTemplateOutlet="slotTemplate; context: { index: i }"></ng-container>
-          }
-        </div>
-        
-        <!-- Middle Order (4) -->
-        <div class="slot-row row-mid">
-          @for (i of [3, 4, 5, 6]; track i) {
-            <ng-container *ngTemplateOutlet="slotTemplate; context: { index: i }"></ng-container>
-          }
-        </div>
-        
-        <!-- Bowlers (4) -->
-        <div class="slot-row row-bot">
-          @for (i of [7, 8, 9, 10]; track i) {
-            <ng-container *ngTemplateOutlet="slotTemplate; context: { index: i }"></ng-container>
-          }
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RIGHT COLUMN: Analytics & AI (30%) -->
-  <div class="column-right">
-    <div class="right-scrollable">
-      <!-- Rivals Section -->
-      <div class="rivals-section">
-        <div class="section-title">
-          <h2>Rival Franchise Status</h2>
-          <lucide-icon [img]="LucideIcons.Users" size="14"></lucide-icon>
-        </div>
-        <div class="rivals-list">
-          @for (rival of rivalFranchises; track rival.name) {
-            <div class="rival-card" [class.active-bidding]="rival.isBidding">
-              <div class="rival-header">
-                <span class="rival-name">{{rival.name}}</span>
-                @if (rival.isBidding) {
-                  <span class="bidding-badge">BIDDING <span class="dot"></span></span>
+        <!-- RIGHT COLUMN: Analytics & AI (30%) -->
+        <div class="column-right">
+          <div class="right-scrollable">
+            <!-- Rivals Section -->
+            <div class="rivals-section">
+              <div class="section-title">
+                <h2>Rival Franchise Status</h2>
+                <lucide-icon [img]="LucideIcons.Users" size="14"></lucide-icon>
+              </div>
+              <div class="rivals-list">
+                @for (rival of rivalFranchises; track rival.name) {
+                  <div class="rival-card" [class.active-bidding]="rival.isBidding">
+                    <div class="rival-header">
+                      <span class="rival-name">{{rival.name}}</span>
+                      @if (rival.isBidding) {
+                        <span class="bidding-badge">BIDDING <span class="dot"></span></span>
+                      }
+                    </div>
+                    <div class="rival-stats">
+                      <span>PURSE: ₹ {{rival.purse | number:'1.1-1'}} CR</span>
+                      <span>SQUAD: {{rival.squadSize}}/11</span>
+                    </div>
+                  </div>
                 }
               </div>
-              <div class="rival-stats">
-                <span>PURSE: ₹ {{rival.purse | number:'1.1-1'}} CR</span>
-                <span>SQUAD: {{rival.squadSize}}/11</span>
+            </div>
+
+            <!-- Radar Chart (Middle) -->
+            <div class="radar-section">
+              <div class="section-title">
+                <lucide-icon [img]="LucideIcons.Activity" size="20"></lucide-icon>
+                <h2>Squad Balance</h2>
+              </div>
+              <div class="radar-container">
+                @if (squad().length > 0) {
+                  <canvas baseChart
+                    [data]="radarChartData()"
+                    [options]="radarChartOptions"
+                    [type]="radarChartType"
+                    class="radar-canvas">
+                  </canvas>
+                } @else {
+                  <div class="radar-empty">
+                    <lucide-icon [img]="LucideIcons.Crosshair" size="32"></lucide-icon>
+                    Add players to view squad balance metrics
+                  </div>
+                }
               </div>
             </div>
-          }
-        </div>
-      </div>
 
-      <!-- Radar Chart (Middle) -->
-      <div class="radar-section">
-        <div class="section-title">
-          <lucide-icon [img]="LucideIcons.Activity" size="20"></lucide-icon>
-          <h2>Squad Balance</h2>
-        </div>
-        <div class="radar-container">
-          @if (squad().length > 0) {
-            <canvas baseChart
-              [data]="radarChartData()"
-              [options]="radarChartOptions"
-              [type]="radarChartType"
-              class="radar-canvas">
-            </canvas>
-          } @else {
-            <div class="radar-empty">
-              <lucide-icon [img]="LucideIcons.Crosshair" size="32"></lucide-icon>
-              Add players to view squad balance metrics
+            <!-- Gemini AI Coach (Bottom Half) -->
+            <div class="ai-section">
+              <!-- Glow effect -->
+              <div class="ai-glow"></div>
+              
+              <div class="ai-card">
+                <div class="ai-header">
+                  <svg width="20" height="20" class="animate-pulse" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="currentColor"/>
+                  </svg>
+                  <h2>Gemini Coach Critique</h2>
+                </div>
+                
+                <div class="ai-content" [class.loading]="isAnalyzing()">
+                  <p>
+                    "{{aiCritique()}}"
+                  </p>
+                </div>
+              </div>
             </div>
-          }
-        </div>
-      </div>
+          </div>
 
-      <!-- Gemini AI Coach (Bottom Half) -->
-      <div class="ai-section">
-        <!-- Glow effect -->
-        <div class="ai-glow"></div>
+          <!-- Action Footer -->
+          <div class="action-footer">
+            <button class="lock-btn" disabled>
+              <lucide-icon [img]="LucideIcons.Shield" size="18"></lucide-icon>
+              LOCK SQUAD & GENERATE LINK
+            </button>
+          </div>
+        </div>
+
+      </div>
+    } @else if (activeTab() === 'AI Insights') {
+      
+      <!-- AI INSIGHTS PAGE -->
+      <div class="insights-page">
+        <div class="insights-header">
+          <div class="insights-icon-box">
+            <lucide-icon [img]="LucideIcons.Sparkles" size="32" color="#22d3ee"></lucide-icon>
+          </div>
+          <div class="insights-title-group">
+            <h1>AI Agent Insights</h1>
+            <p>Deep-dive data analysis of your current squad selection</p>
+          </div>
+        </div>
         
-        <div class="ai-card">
-          <div class="ai-header">
-            <svg width="20" height="20" class="animate-pulse" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="currentColor"/>
-            </svg>
-            <h2>Gemini Coach Critique</h2>
+        <div class="insights-content">
+          <div class="insights-panel">
+            @if (detailedInsights()) {
+              <div class="insight-report" [class.loading]="isGeneratingInsights()">
+                {{detailedInsights()}}
+              </div>
+            } @else {
+              <div class="insight-empty">
+                <lucide-icon [img]="LucideIcons.Brain" size="48" color="#475569"></lucide-icon>
+                <h3>Ready for Analysis</h3>
+                <p>Click the button below to command the AI Agent to evaluate your {{squad().length}} selected players.</p>
+              </div>
+            }
           </div>
-          
-          <div class="ai-content">
-            <p>
-              "{{aiCritique()}}"
-            </p>
+          <div class="insights-actions">
+            <button class="generate-btn" (click)="generateDetailedInsights()" [disabled]="squad().length === 0 || isGeneratingInsights()">
+              @if (isGeneratingInsights()) {
+                <lucide-icon [img]="LucideIcons.Activity" size="18" class="spin-icon"></lucide-icon>
+                Generating Analysis...
+              } @else {
+                <lucide-icon [img]="LucideIcons.Sparkles" size="18"></lucide-icon>
+                Generate Detailed Report
+              }
+            </button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Action Footer -->
-    <div class="action-footer">
-      <button 
-        [disabled]="!isSquadFull() || budgetRemaining() < 0"
-        class="lock-btn"
-      >
-        <div class="btn-bg"></div>
-        <div class="btn-shimmer"></div>
-        <div class="btn-content">
-          <lucide-icon [img]="LucideIcons.Shield" size="18"></lucide-icon>
-          Lock Squad & Generate Link
-        </div>
-      </button>
-    </div>
+    } @else {
+      <!-- Placeholder for other tabs -->
+      <div class="placeholder-page">
+        <lucide-icon [img]="LucideIcons.AlertCircle" size="48" color="#475569"></lucide-icon>
+        <h2>{{activeTab()}}</h2>
+        <p>This module is under construction.</p>
+      </div>
+    }
   </div>
 
   <!-- Reusable Slot Template -->
