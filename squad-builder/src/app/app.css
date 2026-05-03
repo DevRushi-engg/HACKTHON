@@ -1247,3 +1247,219 @@
 .role-ar { color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); background-color: rgba(251, 191, 36, 0.1); }
 .role-wk { color: #e879f9; border-color: rgba(232, 121, 249, 0.3); background-color: rgba(232, 121, 249, 0.1); }
 .role-default { color: #94a3b8; border-color: rgba(148, 163, 184, 0.3); background-color: rgba(148, 163, 184, 0.1); }
+
+/* --- AI INSIGHTS PAGE --- */
+.insights-page {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.insights-header {
+  margin-bottom: 1rem;
+}
+
+.i-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.i-title h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.insights-header p {
+  color: #94a3b8;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.5rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.insights-data {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.insight-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.card-title {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.card-title h3 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.viz-card {
+  flex: 0 0 auto;
+}
+
+.pie-container {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.json-card {
+  flex: 1;
+  min-height: 250px;
+}
+
+.json-viewer {
+  padding: 1rem;
+  overflow-y: auto;
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.json-viewer pre {
+  margin: 0;
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  color: #38bdf8;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.insights-agent {
+  display: flex;
+  flex-direction: column;
+}
+
+.agent-card {
+  flex: 1;
+}
+
+.agent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.agent-title-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.generate-btn {
+  background: rgba(34, 211, 238, 0.1);
+  color: #22d3ee;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background: rgba(34, 211, 238, 0.2);
+  border-color: rgba(34, 211, 238, 0.4);
+}
+
+.generate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
+  color: #64748b;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.agent-body {
+  padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+.agent-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #64748b;
+  gap: 1rem;
+  text-align: center;
+}
+
+.agent-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #22d3ee;
+  gap: 1.5rem;
+}
+
+.loader-pulse {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(34, 211, 238, 0.5);
+  animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 211, 238, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+}
+
+.formatted-text {
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  text-shadow: none;
+}
+
+/* PLACEHOLDER PAGE */
+.placeholder-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  gap: 1rem;
+}

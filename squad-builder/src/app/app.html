@@ -100,6 +100,7 @@
   <!-- MAIN DASHBOARD -->
   <div class="dashboard">
   
+  @if (activeTab() === 'War Room') {
   <!-- LEFT COLUMN: Player Pool (30%) -->
   <div class="column-left">
     <!-- Header -->
@@ -376,6 +377,81 @@
       }
     </div>
   </ng-template>
+  } @else if (activeTab() === 'AI Insights') {
+    <!-- AI INSIGHTS PAGE -->
+    <div class="insights-page">
+      <div class="insights-header">
+        <div class="i-title">
+          <lucide-icon [img]="LucideIcons.Sparkles" size="28" class="text-cyan"></lucide-icon>
+          <h1>Deep Squad Analysis</h1>
+        </div>
+        <p>Gemini AI Agent provides strategic breakdown based on your selected JSON payload.</p>
+      </div>
+      
+      <div class="insights-grid">
+        <!-- Data Visualization & JSON Payload -->
+        <div class="insights-data">
+          <!-- Role Distribution Chart -->
+          <div class="insight-card viz-card">
+            <div class="card-title">
+              <lucide-icon [img]="LucideIcons.Activity" size="18"></lucide-icon>
+              <h3>Role Distribution</h3>
+            </div>
+            <div class="pie-container" style="height: 250px; position: relative;">
+              @if (squad().length > 0) {
+                <canvas baseChart [data]="pieChartData()" [options]="pieChartOptions" [type]="pieChartType"></canvas>
+              } @else {
+                <div class="empty-chart text-muted">No squad data available</div>
+              }
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- AI Agent Detailed Report -->
+        <div class="insights-agent">
+          <div class="insight-card agent-card">
+            <div class="card-title agent-header">
+              <div class="agent-title-left">
+                <lucide-icon [img]="LucideIcons.Brain" size="20"></lucide-icon>
+                <h3>AI Agent Strategic Report</h3>
+              </div>
+              <button class="generate-btn" (click)="generateDeepInsights()" [disabled]="squad().length === 0 || isGeneratingInsights()">
+                <lucide-icon [img]="LucideIcons.Play" size="14"></lucide-icon>
+                {{ isGeneratingInsights() ? 'Analyzing...' : 'Generate Insights' }}
+              </button>
+            </div>
+            
+            <div class="agent-body">
+              @if (isGeneratingInsights()) {
+                <div class="agent-loading">
+                  <div class="pulse-ring"></div>
+                  <p>Processing payload and generating strategy guide...</p>
+                </div>
+              } @else if (deepInsights()) {
+                <div class="markdown-result" [innerHTML]="deepInsights() | slice:0:2000">
+                  <!-- In a real app we'd use a markdown parser pipe. For now, simple text or pre works. -->
+                </div>
+                <pre class="formatted-text" style="white-space: pre-wrap; font-family: inherit;">{{deepInsights()}}</pre>
+              } @else {
+                <div class="agent-empty">
+                  <lucide-icon [img]="LucideIcons.Sparkles" size="32" class="opacity-50"></lucide-icon>
+                  <p>Click "Generate Insights" to run deep analysis on the current JSON payload.</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <!-- PLACEHOLDER FOR OTHER TABS -->
+    <div class="placeholder-page">
+      <lucide-icon [img]="LucideIcons.AlertCircle" size="48" class="text-cyan opacity-50"></lucide-icon>
+      <h2>{{activeTab()}} Module</h2>
+      <p>This module is currently under construction for the hackathon.</p>
+    </div>
+  }
 
   </div>
 </div>
