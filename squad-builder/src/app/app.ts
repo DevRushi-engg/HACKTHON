@@ -176,6 +176,10 @@ export class App {
   
   aiCritique = signal<string>("Assemble your full 11-man squad to receive the AI Coach Critique.");
   isAnalyzing = signal<boolean>(false);
+  
+  // AI Insights Page State
+  deepInsights = signal<string>('');
+  isGeneratingInsights = signal<boolean>(false);
 
   constructor() {
     effect(() => {
@@ -213,7 +217,6 @@ export class App {
 
       const data = await response.json();
       if (data.candidates && data.candidates[0].content.parts[0].text) {
-        // Clean up markdown bolding from response if any
         let text = data.candidates[0].content.parts[0].text.trim();
         text = text.replace(/\*\*/g, '');
         this.aiCritique.set(text);
@@ -228,35 +231,26 @@ export class App {
     }
   }
 
-  detailedInsights = signal<string>('');
-  isGeneratingInsights = signal<boolean>(false);
-
-  async generateDetailedInsights() {
-    if (this.squad().length === 0) {
-      this.detailedInsights.set("You need to select at least one player to generate insights.");
-      return;
-    }
+  async generateDeepInsights() {
+    if (this.isGeneratingInsights()) return;
+    if (this.squad().length === 0) return;
     
     this.isGeneratingInsights.set(true);
-    this.detailedInsights.set("Initiating AI Agent... Analyzing squad synergy and player roles...");
+    this.deepInsights.set('');
 
     try {
-      const squadJSON = JSON.stringify(this.squad().map(p => ({
-        name: p.name,
-        role: p.role,
-        cost: p.cost,
-        stats: p.stats
-      })), null, 2);
-
-      const prompt = `You are a world-class cricket data analyst. Analyze the following squad selection provided in JSON format. 
-      Write a brief 3-paragraph report. 
-      Paragraph 1: Overall squad synergy and primary strength.
-      Paragraph 2: Detailed tactical analysis (batting depth and bowling options).
-      Paragraph 3: Key vulnerabilities or recommended strategies for the tournament.
-      Do not use markdown bolding (**). Just use plain text with line breaks between paragraphs.
+      const payloadJson = JSON.stringify(this.squad(), null, 2);
+      const prompt = `You are an elite AI Data Analyst for a professional cricket franchise. I am providing you with the exact JSON payload of our currently selected squad. 
+      Analyze this JSON data and provide a detailed strategic report. Use the following headers:
+      - STRATEGIC OVERVIEW
+      - KEY STRENGTHS
+      - POTENTIAL VULNERABILITIES
+      - STAR PLAYERS TO WATCH
       
-      Squad JSON:
-      ${squadJSON}`;
+      Keep the formatting clean and professional.
+      
+      Here is the JSON payload:
+      ${payloadJson}`;
 
       const apiKey = 'AIzaSyD7MiA0IaoO7cSOOs5M0DLSeRkFEg91bnI';
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
@@ -271,15 +265,13 @@ export class App {
 
       const data = await response.json();
       if (data.candidates && data.candidates[0].content.parts[0].text) {
-        let text = data.candidates[0].content.parts[0].text;
-        text = text.replace(/\*\*/g, '');
-        this.detailedInsights.set(text);
+        this.deepInsights.set(data.candidates[0].content.parts[0].text.trim());
       } else {
-        this.detailedInsights.set("AI Agent failed to generate a report.");
+        this.deepInsights.set("Failed to generate deep insights.");
       }
     } catch (error) {
       console.error("Gemini API Error:", error);
-      this.detailedInsights.set("Error connecting to Gemini AI Agent.");
+      this.deepInsights.set("Error connecting to Gemini AI.");
     } finally {
       this.isGeneratingInsights.set(false);
     }
@@ -338,4 +330,34 @@ export class App {
     if (pct > 85) return 'bg-amber';
     return 'bg-emerald';
   }
+
+  // Pie Chart config for Insights Page
+  public pieChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { color: '#cbd5e1', font: { family: 'Inter', size: 12 } }
+      }
+    }
+  };
+  public pieChartType: ChartType = 'pie';
+  
+  pieChartData = computed<ChartData<'pie'>>(() => {
+    const sq = this.squad();
+    const bats = sq.filter(p => p.role === 'BAT').length;
+    const bowls = sq.filter(p => p.role === 'BOWL').length;
+    const ars = sq.filter(p => p.role === 'AR').length;
+    const wks = sq.filter(p => p.role === 'WK').length;
+    return {
+      labels: ['Batters', 'Bowlers', 'All-Rounders', 'Keepers'],
+      datasets: [{
+        data: [bats, bowls, ars, wks],
+        backgroundColor: ['#38bdf8', '#fbbf24', '#a78bfa', '#34d399'],
+        borderColor: '#0f172a',
+        borderWidth: 2
+      }]
+    };
+  });
 }
