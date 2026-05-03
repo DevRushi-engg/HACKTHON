@@ -332,6 +332,7 @@
       <button 
         [disabled]="!isSquadFull() || budgetRemaining() < 0"
         class="lock-btn"
+        (click)="lockSquad()"
       >
         <div class="btn-bg"></div>
         <div class="btn-shimmer"></div>
@@ -363,10 +364,7 @@
           </div>
         </div>
         <!-- Remove Button -->
-        <button 
-          (click)="removePlayer(squad()[i])"
-          class="remove-btn"
-        >
+        <button (click)="removePlayer(squad()[i])" class="remove-btn">
           <lucide-icon [img]="LucideIcons.X" size="12" strokeWidth="3"></lucide-icon>
         </button>
       } @else {
@@ -380,6 +378,200 @@
       }
     </div>
   </ng-template>
+
+  } @else if (activeTab() === 'My Squad') {
+    <!-- MY SQUAD PAGE -->
+    <div class="full-page">
+      <div class="page-header">
+        <div class="page-title-row">
+          <lucide-icon [img]="LucideIcons.Users" size="26" class="text-cyan"></lucide-icon>
+          <h1>My Squad — {{franchiseName()}}</h1>
+        </div>
+        <p class="page-subtitle">{{squad().length}}/11 Players · Budget Spent: ₹{{budgetSpent() | number:'1.1-1'}} CR</p>
+      </div>
+
+      @if (squad().length === 0) {
+        <div class="empty-full-page">
+          <lucide-icon [img]="LucideIcons.Users" size="60" class="opacity-30"></lucide-icon>
+          <p>Your squad is empty. Head to the War Room to start adding players.</p>
+          <button class="generate-btn" (click)="activeTab.set('War Room')">Go to War Room</button>
+        </div>
+      } @else {
+        <div class="squad-grid">
+          @for (player of squad(); track player.id; let i = $index) {
+            <div class="squad-player-card">
+              <div class="squad-player-num">{{i + 1}}</div>
+              <div class="squad-player-avatar">
+                <lucide-icon [img]="LucideIcons.User" size="28"></lucide-icon>
+              </div>
+              <div class="squad-player-details">
+                <div class="squad-player-name">{{player.name}}</div>
+                <div class="squad-player-role-row">
+                  <span class="role-tag" [ngClass]="getRoleColor(player.role)">{{player.role}}</span>
+                  <span class="squad-player-cost">₹{{player.cost}} CR</span>
+                </div>
+                @if (player.stats?.matches) {
+                  <div class="squad-player-stats">
+                    @if (player.stats?.runs) { <span>{{player.stats.runs}} Runs</span> }
+                    @if (player.stats?.wickets) { <span>{{player.stats.wickets}} Wkts</span> }
+                    @if (player.stats?.economy) { <span>Eco: {{player.stats.economy}}</span> }
+                    @if (player.stats?.strikeRate) { <span>SR: {{player.stats.strikeRate}}</span> }
+                  </div>
+                }
+              </div>
+              <button class="squad-remove-btn" (click)="removePlayer(player)">
+                <lucide-icon [img]="LucideIcons.X" size="14"></lucide-icon>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  } @else if (activeTab() === 'Rival Tracker') {
+    <!-- RIVAL TRACKER PAGE -->
+    <div class="full-page">
+      <div class="page-header">
+        <div class="page-title-row">
+          <lucide-icon [img]="LucideIcons.TrendingUp" size="26" class="text-cyan"></lucide-icon>
+          <h1>Rival Franchise Tracker</h1>
+        </div>
+        <p class="page-subtitle">Live auction intelligence — monitor rival bidding activity and squad status.</p>
+      </div>
+
+      <div class="rivals-full-grid">
+        @for (rival of rivalFranchises(); track rival.name) {
+          <div class="rival-full-card" [class.active-bidding]="rival.isBidding">
+            <div class="rival-full-header" [style.border-left-color]="rival.color">
+              <div>
+                <div class="rival-full-name">{{rival.name}}</div>
+                <div class="rival-full-trend" [class.trend-up]="rival.trend.startsWith('+')" [class.trend-down]="rival.trend.startsWith('-')">
+                  {{ rival.trend.startsWith('+') ? '▲' : rival.trend.startsWith('-') ? '▼' : '—' }} {{rival.trend}} players this round
+                </div>
+              </div>
+              @if (rival.isBidding) {
+                <div class="live-badge">● LIVE</div>
+              }
+            </div>
+            <div class="rival-full-stats">
+              <div class="rival-stat-item">
+                <div class="rival-stat-label">PURSE</div>
+                <div class="rival-stat-value">₹{{rival.purse | number:'1.1-1'}} CR</div>
+              </div>
+              <div class="rival-stat-item">
+                <div class="rival-stat-label">SQUAD SIZE</div>
+                <div class="rival-stat-value">{{rival.squadSize}}/11</div>
+              </div>
+              <div class="rival-stat-item">
+                <div class="rival-stat-label">STATUS</div>
+                <div class="rival-stat-value" [style.color]="rival.isBidding ? '#34d399' : '#94a3b8'">
+                  {{ rival.isBidding ? 'Actively Bidding' : 'Watching' }}
+                </div>
+              </div>
+            </div>
+            <!-- Budget bar -->
+            <div class="rival-budget-bar-bg">
+              <div class="rival-budget-bar-fill" [style.width.%]="(rival.squadSize / 11) * 100" [style.background-color]="rival.color"></div>
+            </div>
+            <div class="rival-bar-label">Squad completion: {{((rival.squadSize / 11) * 100).toFixed(0)}}%</div>
+          </div>
+        }
+      </div>
+    </div>
+
+  } @else if (activeTab() === 'Scouting') {
+    <!-- SCOUTING PAGE -->
+    <div class="full-page">
+      <div class="page-header">
+        <div class="page-title-row">
+          <lucide-icon [img]="LucideIcons.Target" size="26" class="text-cyan"></lucide-icon>
+          <h1>AI Scouting Engine</h1>
+        </div>
+        <p class="page-subtitle">Ask the AI agent to recommend players. Natural language queries supported.</p>
+      </div>
+
+      <div class="scouting-layout">
+        <!-- Scout Query Panel -->
+        <div class="scout-query-panel">
+          <div class="scout-input-area">
+            <textarea 
+              class="scout-textarea"
+              [ngModel]="scoutingQuery()"
+              (ngModelChange)="scoutingQuery.set($event)"
+              placeholder="e.g. 'Find me a left-arm spinner who can bat at number 7' or 'Who is the best value-for-money pace bowler?'"
+              rows="4"
+            ></textarea>
+            <button class="generate-btn scout-run-btn" (click)="runScoutingQuery()" [disabled]="!scoutingQuery().trim() || isScoutingLoading()">
+              <lucide-icon [img]="LucideIcons.Sparkles" size="14"></lucide-icon>
+              {{ isScoutingLoading() ? 'Scouting...' : 'Run Scout Query' }}
+            </button>
+          </div>
+
+          @if (isScoutingLoading()) {
+            <div class="agent-loading" style="padding: 2rem;">
+              <div class="loader-pulse"></div>
+              <p>AI is analyzing player database...</p>
+            </div>
+          } @else if (scoutingResult()) {
+            <div class="scout-result">
+              <div class="scout-result-header">
+                <lucide-icon [img]="LucideIcons.Brain" size="16"></lucide-icon>
+                <span>AI Scout Recommendation</span>
+              </div>
+              <p>{{scoutingResult()}}</p>
+            </div>
+          }
+        </div>
+
+        <!-- Player Database Browser -->
+        <div class="scout-db-panel">
+          <div class="scout-db-header">
+            <h3>Player Database</h3>
+            <div class="search-bar" style="margin: 0; flex: 1; max-width: 240px;">
+              <div class="search-icon"><lucide-icon [img]="LucideIcons.Search" size="14"></lucide-icon></div>
+              <input type="text" [ngModel]="scoutingQuery()" (ngModelChange)="scoutingQuery.set($event)" class="search-input" placeholder="Filter players...">
+            </div>
+          </div>
+          <div class="scout-db-list">
+            @for (player of scoutingFilteredPlayers(); track player.id) {
+              <div class="scout-db-row">
+                <span class="role-tag" [ngClass]="getRoleColor(player.role)">{{player.role}}</span>
+                <span class="scout-db-name">{{player.name}}</span>
+                <span class="scout-db-cost">₹{{player.cost}}CR</span>
+                <button class="add-btn" (click)="addPlayer(player)" [disabled]="isSquadFull() || !!squad().find(p => p.id === player.id)">+</button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+  } @else if (activeTab() === 'Simulation') {
+    <!-- SIMULATION PAGE -->
+    <div class="full-page">
+      <div class="page-header">
+        <div class="page-title-row">
+          <lucide-icon [img]="LucideIcons.Zap" size="26" class="text-cyan"></lucide-icon>
+          <h1>Auction Simulation</h1>
+        </div>
+        <p class="page-subtitle">Live auction replay for {{franchiseName()}}.</p>
+      </div>
+      <div class="simulation-log">
+        @for (entry of simulationLog(); track $index) {
+          <div class="sim-entry">{{entry}}</div>
+        }
+        @if (isSimulating()) {
+          <div class="sim-entry sim-typing">Processing next bid...</div>
+        }
+        @if (!isSimulating() && simulationLog().length === 0) {
+          <div class="agent-empty">
+            <lucide-icon [img]="LucideIcons.Play" size="40" class="opacity-30"></lucide-icon>
+            <p>Click START SIMULATION in the sidebar to begin the auction replay.</p>
+          </div>
+        }
+      </div>
+    </div>
+
   } @else if (activeTab() === 'AI Insights') {
     <!-- AI INSIGHTS PAGE -->
     <div class="insights-page">
@@ -388,13 +580,12 @@
           <lucide-icon [img]="LucideIcons.Sparkles" size="28" class="text-cyan"></lucide-icon>
           <h1>Deep Squad Analysis</h1>
         </div>
-        <p>Gemini AI Agent provides strategic breakdown based on your selected JSON payload.</p>
+        <p>Gemini AI Agent provides strategic breakdown based on your selected squad.</p>
       </div>
       
       <div class="insights-grid">
-        <!-- Data Visualization & JSON Payload -->
+        <!-- Data Visualization -->
         <div class="insights-data">
-          <!-- Role Distribution Chart -->
           <div class="insight-card viz-card">
             <div class="card-title">
               <lucide-icon [img]="LucideIcons.Activity" size="18"></lucide-icon>
@@ -408,7 +599,6 @@
               }
             </div>
           </div>
-          
         </div>
 
         <!-- AI Agent Detailed Report -->
@@ -424,20 +614,18 @@
                 {{ isGeneratingInsights() ? 'Analyzing...' : 'Generate Insights' }}
               </button>
             </div>
-            
             <div class="agent-body">
               @if (isGeneratingInsights()) {
                 <div class="agent-loading">
-                  <div class="pulse-ring"></div>
+                  <div class="loader-pulse"></div>
                   <p>Processing payload and generating strategy guide...</p>
                 </div>
               } @else if (deepInsights()) {
-                <div class="markdown-result formatted-text" [innerHTML]="deepInsights()">
-                </div>
+                <div class="markdown-result formatted-text" [innerHTML]="deepInsights()"></div>
               } @else {
                 <div class="agent-empty">
                   <lucide-icon [img]="LucideIcons.Sparkles" size="32" class="opacity-50"></lucide-icon>
-                  <p>Click "Generate Insights" to run deep analysis on the current JSON payload.</p>
+                  <p>Click "Generate Insights" to run deep analysis on your current squad.</p>
                 </div>
               }
             </div>
@@ -446,14 +634,68 @@
       </div>
     </div>
   } @else {
-    <!-- PLACEHOLDER FOR OTHER TABS -->
     <div class="placeholder-page">
       <lucide-icon [img]="LucideIcons.AlertCircle" size="48" class="text-cyan opacity-50"></lucide-icon>
       <h2>{{activeTab()}} Module</h2>
-      <p>This module is currently under construction for the hackathon.</p>
+      <p>This module is currently under construction.</p>
     </div>
   }
 
   </div>
 </div>
+
+<!-- ── HELP MODAL ────────────────────────────────────────── -->
+@if (showHelp()) {
+<div class="modal-overlay" (click)="showHelp.set(false)">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Help Center</h2>
+      <button class="modal-close" (click)="showHelp.set(false)">
+        <lucide-icon [img]="LucideIcons.X" size="18"></lucide-icon>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="help-section"><h3>🏏 War Room</h3><p>Search and filter players from the CSV database. Click <strong>+</strong> to add a player to your squad (max 11). Remove players by hovering over their slot.</p></div>
+      <div class="help-section"><h3>👥 My Squad</h3><p>View your full squad lineup with detailed stats for each selected player.</p></div>
+      <div class="help-section"><h3>📊 Rival Tracker</h3><p>Monitor the bidding activity and squad progress of rival franchises in real time.</p></div>
+      <div class="help-section"><h3>🎯 Scouting</h3><p>Ask the AI scouting engine natural language questions to get player recommendations. Browse the full player database and add directly to squad.</p></div>
+      <div class="help-section"><h3>✨ AI Insights</h3><p>After building your squad, generate a deep Gemini AI strategic report with strengths, vulnerabilities, and star players to watch.</p></div>
+      <div class="help-section"><h3>🔒 Lock Squad</h3><p>Once your squad has 11 players and is within budget, lock it and generate a shareable link.</p></div>
+      <div class="help-section"><h3>⬇️ Export Data</h3><p>Download your squad as a JSON file for offline analysis.</p></div>
+    </div>
+  </div>
+</div>
+}
+
+<!-- ── LOCK SQUAD MODAL ──────────────────────────────────── -->
+@if (squadLocked() && shareLink()) {
+<div class="modal-overlay" (click)="squadLocked.set(false)">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>🔒 Squad Locked!</h2>
+      <button class="modal-close" (click)="squadLocked.set(false)">
+        <lucide-icon [img]="LucideIcons.X" size="18"></lucide-icon>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="color:#94a3b8; margin-bottom:1rem;">Your squad has been locked. Share the link below with your team:</p>
+      <div class="share-link-box">
+        <span class="share-link-text">{{shareLink() | slice:0:60}}...</span>
+        <button class="generate-btn" (click)="copyLink()">
+          {{ showCopied() ? '✅ Copied!' : 'Copy Link' }}
+        </button>
+      </div>
+      <div style="margin-top:1.5rem;">
+        <button class="lock-btn" style="position:relative; overflow:hidden;" (click)="exportData()">
+          <div class="btn-bg"></div>
+          <div class="btn-content">
+            <lucide-icon [img]="LucideIcons.Download" size="16"></lucide-icon>
+            Export Squad as JSON
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
 }

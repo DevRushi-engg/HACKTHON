@@ -1,17 +1,18 @@
 const express = require('express');
 const cors = require('cors');
-const fetch = require('node-fetch');
+// Node 18+ has fetch built-in — no extra package needed
 
 const app = express();
 const PORT = 3001;
 
 // ─── Gemini API Config ─────────────────────────────────────
-const GEMINI_API_KEY = 'AIzaSyDWcutMVHC7dozD1LuBE5YEidhXcKLFDX4';
+const GEMINI_API_KEY  = 'AIzaSyDiNblgP4Svr6skm2JJMegsH2MOlSfjxmA';
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
 // ─── Middleware ────────────────────────────────────────────
-app.use(cors({ origin: 'http://localhost:4200' }));
-app.use(express.json());
+app.use(cors({ origin: ['http://localhost:4200', 'http://localhost:4201'] }));
+app.use(express.json({ limit: '10mb' }));
+
 
 // ─── Helper: call Gemini ───────────────────────────────────
 async function callGemini(promptText) {

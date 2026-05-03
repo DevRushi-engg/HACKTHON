@@ -1463,6 +1463,546 @@
   color: #94a3b8;
   gap: 1rem;
 }
+/* ============================================================
+   FULL PAGE VIEWS (My Squad, Rival Tracker, Scouting, Simulation)
+   ============================================================ */
+
+.full-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  overflow-y: auto;
+  gap: 1.5rem;
+  background: #020617;
+}
+
+.page-header {
+  flex-shrink: 0;
+}
+
+.page-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.page-title-row h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.empty-full-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #64748b;
+  text-align: center;
+}
+
+/* ── My Squad Grid ───────────────────────────── */
+.squad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.squad-player-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid #1e293b;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.squad-player-card:hover {
+  border-color: rgba(34, 211, 238, 0.3);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.squad-player-num {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #1e293b;
+  background: #334155;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.squad-player-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #1e293b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.squad-player-details { flex: 1; min-width: 0; }
+
+.squad-player-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.squad-player-role-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.squad-player-cost {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #34d399;
+}
+
+.squad-player-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+}
+
+.squad-player-stats span {
+  font-size: 0.6875rem;
+  background: rgba(30, 41, 59, 0.8);
+  color: #94a3b8;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  border: 1px solid #334155;
+}
+
+.squad-remove-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #f43f5e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.squad-player-card:hover .squad-remove-btn { opacity: 1; }
+
+/* ── Rival Tracker ───────────────────────────── */
+.rivals-full-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.rival-full-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid #1e293b;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  transition: all 0.2s;
+}
+
+.rival-full-card.active-bidding {
+  border-color: rgba(52, 211, 153, 0.3);
+  background: rgba(16, 185, 129, 0.04);
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.05);
+}
+
+.rival-full-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-left: 0.75rem;
+  border-left: 3px solid transparent;
+  margin-bottom: 1rem;
+}
+
+.rival-full-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rival-full-trend {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+}
+
+.trend-up { color: #34d399 !important; }
+.trend-down { color: #f43f5e !important; }
+
+.live-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #34d399;
+  letter-spacing: 0.1em;
+  animation: pulse 1.5s infinite;
+}
+
+.rival-full-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.rival-stat-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.rival-stat-value {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #e2e8f0;
+}
+
+.rival-budget-bar-bg {
+  height: 4px;
+  background: #1e293b;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 0.375rem;
+}
+
+.rival-budget-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.6s ease-out;
+}
+
+.rival-bar-label {
+  font-size: 0.625rem;
+  color: #64748b;
+  text-align: right;
+}
+
+/* ── Scouting ────────────────────────────────── */
+.scouting-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.scout-query-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.scout-input-area {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid #1e293b;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.scout-textarea {
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid #334155;
+  border-radius: 0.5rem;
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  resize: vertical;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.scout-textarea:focus { border-color: #06b6d4; }
+
+.scout-run-btn {
+  align-self: flex-end;
+}
+
+.scout-result {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.scout-result-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #22d3ee;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+
+.scout-result p {
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.scout-db-panel {
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid #1e293b;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.scout-db-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #1e293b;
+  gap: 1rem;
+}
+
+.scout-db-header h3 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.scout-db-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.scout-db-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(30, 41, 59, 0.3);
+  transition: background 0.15s;
+}
+
+.scout-db-row:hover { background: rgba(30, 41, 59, 0.7); }
+
+.scout-db-name {
+  flex: 1;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scout-db-cost {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #34d399;
+  white-space: nowrap;
+}
+
+/* ── Simulation Log ──────────────────────────── */
+.simulation-log {
+  flex: 1;
+  background: rgba(2, 6, 23, 0.8);
+  border: 1px solid #1e293b;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+}
+
+.sim-entry {
+  font-size: 0.875rem;
+  color: #22d3ee;
+  padding: 0.5rem 0.75rem;
+  border-left: 2px solid rgba(34, 211, 238, 0.3);
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sim-typing {
+  color: #64748b;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── MODALS ──────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-box {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 1.25rem;
+  width: 100%;
+  max-width: 540px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.25s ease-out;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #1e293b;
+}
+
+.modal-header h2 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.modal-close {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid #334155;
+  color: #94a3b8;
+  border-radius: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-close:hover { color: #f1f5f9; border-color: #475569; }
+
+.modal-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.help-section h3 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #22d3ee;
+  margin: 0 0 0.375rem;
+}
+
+.help-section p {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Share link */
+.share-link-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid #334155;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.share-link-text {
+  flex: 1;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* opacity helpers */
+.opacity-30 { opacity: 0.3; }
+.opacity-50 { opacity: 0.5; }
+
+/* Responsive additions for new pages */
+@media (max-width: 768px) {
+  .scouting-layout { grid-template-columns: 1fr; }
+  .rivals-full-grid { grid-template-columns: 1fr; }
+  .squad-grid { grid-template-columns: 1fr; }
+  .full-page { padding: 1rem; }
+}
 
 /* ============================================================
    RESPONSIVE DESIGN — Mobile First Media Queries
