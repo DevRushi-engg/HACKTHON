@@ -107,6 +107,32 @@ ${payloadJson}`;
   }
 });
 
+// ─── Route: POST /api/scout ───────────────────────────────
+// AI scouting — recommends a player based on a natural language query
+app.post('/api/scout', async (req, res) => {
+  const { query, currentSquad } = req.body;
+  if (!query) return res.status(400).json({ error: 'query is required' });
+
+  const squadContext = currentSquad?.length
+    ? `Current squad: ${currentSquad.map(p => `${p.name} (${p.role})`).join(', ')}`
+    : 'No players currently selected.';
+
+  const prompt = `You are an elite IPL cricket scout. Based on the following scouting request, give a concise 4-5 sentence recommendation naming specific types of players to look for, their ideal attributes, and how they'd fit the team needs.
+  
+Scouting Query: "${query}"
+${squadContext}
+
+Be direct and professional. Do not use markdown headers, just clean paragraph text.`;
+
+  try {
+    const text = await callGemini(prompt);
+    res.json({ recommendation: text.replace(/\*\*/g, '') });
+  } catch (error) {
+    console.error('[/api/scout] Error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ─── Start Server ──────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`\n✅ IPL Squad Builder Backend running on http://localhost:${PORT}`);

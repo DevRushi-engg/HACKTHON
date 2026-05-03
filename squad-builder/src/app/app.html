@@ -78,15 +78,15 @@
 
     <!-- Start Simulation -->
     <div class="sidebar-action">
-      <button class="simulation-btn">
+      <button class="simulation-btn" (click)="startSimulation()">
         <lucide-icon [img]="LucideIcons.Play" size="14"></lucide-icon>
-        START SIMULATION
+        {{ isSimulating() ? 'SIMULATING...' : 'START SIMULATION' }}
       </button>
     </div>
 
     <!-- Footer -->
     <div class="sidebar-footer">
-      <button class="footer-btn">
+      <button class="footer-btn" (click)="showHelp.set(true)">
         <lucide-icon [img]="LucideIcons.HelpCircle" size="14"></lucide-icon>
         <span>Help Center</span>
       </button>
