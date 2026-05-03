@@ -54,6 +54,25 @@ export class GeminiService {
   }
 
   /**
+   * AI scouting query — recommends players based on a natural language request
+   */
+  async scoutPlayer(query: string, currentSquad: Player[]): Promise<string> {
+    try {
+      const response = await fetch(`${this.baseUrl}/scout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, currentSquad }),
+      });
+      if (!response.ok) { const err = await response.json(); throw new Error(err.error || 'Backend error'); }
+      const data = await response.json();
+      return data.recommendation;
+    } catch (error: any) {
+      console.error('[GeminiService.scoutPlayer]', error);
+      throw new Error(error.message || 'Failed to reach backend server');
+    }
+  }
+
+  /**
    * Health check — returns true if backend is reachable
    */
   async isBackendReachable(): Promise<boolean> {
